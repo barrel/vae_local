@@ -1,3 +1,5 @@
+require 'rubygems'
+
 require 'cgi'
 require 'digest/md5'
 require 'mongrel'
@@ -170,7 +172,7 @@ class VaeLocal
       cmd = $0
       cmd = "vae" if cmd =~ /\.\.\/vae_local/
       puts "** Error:"
-      puts "   " + e
+      puts "   " + e.to_s
       puts "Type #{cmd} --help for help."
     end
   end
