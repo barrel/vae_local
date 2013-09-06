@@ -112,7 +112,7 @@ class VaeLocal
     raise VaeError, "You specified an invalid path to the local copy of your Vae site." unless File.exists?(options[:site_root])
 
     $biglock = Mutex.new
-    dw = DirectoryWatcher.new options[:site_root], :interval => 1.0, :glob => SERVER_PARSED_GLOB, :pre_load => true
+    dw = DirectoryWatcher.new options[:site_root], :interval => 1.0, :glob => SERVER_PARSED_GLOB, :pre_load => true, :logger => DirectoryWatcher::NullLogger.new
     dw.add_observer { |*args| 
       args.each { |event|
         path = event.path.gsub($site.root, "")
