@@ -16,7 +16,6 @@ Gem::Specification.new do |s|
   s.rubygems_version = '1.8.10'
   s.summary = "This gem allows for local development for sites on Vae Platform (http://vaeplatform.com/)"
 
-  s.add_dependency 'av-redis-client', '0.2.2'
   s.add_dependency 'chunky_png'
   s.add_dependency 'compass', '0.11.5'
   s.add_dependency 'directory_watcher'
