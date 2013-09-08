@@ -102,7 +102,12 @@ class VaeSiteServlet < Servlet
     return nil unless local_path.length > 0
     get_source_file(local_path)
   end
-  
+ 
+  def get_line_from_sass_exception(exception)
+    return exception.message.scan(/:(\d+)/).first.first if exception.is_a?(::SyntaxError)
+    exception.backtrace[0].scan(/:(\d+)/).first.first
+  end 
+
   def not_modified?(req, res, mtime, etag)
     return true if (ims = req.params['IF_MODIFIED_SINCE']) && Time.parse(ims) >= mtime
     return true if (inm = req.params['IF_NONE_MATCH']) && WEBrick::HTTPUtils::split_header_value(inm).member?(etag)
@@ -113,10 +118,12 @@ class VaeSiteServlet < Servlet
     begin
       options = Compass.sass_engine_options
       options[:load_paths] << File.dirname(local_path) 
+      options[:syntax] = :scss if local_path =~ /\.scss$/
       engine = Sass::Engine.new(open(local_path, "rb").read, options)
       engine.render
     rescue Sass::SyntaxError => e
       e.message
+      "Sass Syntax Error on line #{get_line_from_sass_exception(e)} #{e.message}"
     end
   end
 
@@ -139,7 +146,7 @@ class VaeSiteServlet < Servlet
       else
         mtype = WEBrick::HTTPUtils::mime_type(local_path, WEBrick::HTTPUtils::DefaultMimeTypes)
         res.header['last-modified'] = mtime.httpdate
-        if req.params["REQUEST_URI"] =~ /.sass$/
+        if req.params["REQUEST_URI"] =~ /\.(sass|scss)$/
           res.header['Content-Type'] = "text/css"
           res.body << render_sass(local_path)
         else
