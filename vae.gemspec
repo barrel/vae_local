@@ -22,5 +22,5 @@ Gem::Specification.new do |s|
   s.add_dependency 'haml', '3.1.2'
   s.add_dependency 'highline'
   s.add_dependency 'mongrel', '1.2.0.pre2'
-  s.add_dependency 'sass', '3.1.4'
+  s.add_dependency 'sass', '3.2.10'
 end
