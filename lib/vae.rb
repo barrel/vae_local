@@ -2,6 +2,7 @@ require 'rubygems'
 
 require 'cgi'
 require 'digest/md5'
+require 'json'
 require 'mongrel'
 require 'net/http'
 require 'net/https'
@@ -145,22 +146,49 @@ class VaeLocal
       puts "Thanks for using Vae!"
     end
   end
+
+  def show_job_status(res, site)
+    data = JSON.parse(res.body)
+    if data['error']
+      raise VaeError, data['error']
+    else
+      puts "Request started, waiting for completion..."
+      loop do
+        sleep 5
+        req = Net::HTTP::Get.new("/resque_jobs/show/#{data['job']}")
+        res = fetch_from_vaeplatform(site, req)
+        status = JSON.parse(res.body)
+        if status['status'] == "completed"
+          puts data['success']
+          return
+        elsif status['status'] != "working"
+          raise VaeError, "Got the following error from Vae Platform: #{status['message']}"
+        end
+      end
+    end
+  rescue JSON::ParserError
+    raise VaeError, "An unknown error occurred requesting this operation from Vae Platform.  Please email support for help."
+  end
   
   def stagerelease(action, site, username, password)
-    if action == "deploy"
-      action = "stage"
+    if action == "deploy" or action == "stage"
+      action = "subversion/stage"
     elsif action == "stagerelease"
-      stagerelease("stage", site, username, password)
-      stagerelease("release", site, username, password)
+      stagerelease("subversion/stage", site, username, password)
+      stagerelease("subversion/release", site, username, password)
       return
+    elsif action == "release"
+      action = "releases/release"
+    elsif action == "rollback"
+      action = "releases/rollback"
     end
-    req = Net::HTTP::Post.new("/subversion/#{action}")
-    req.body = "username=#{CGI.escape(username)}&password=#{CGI.escape(password)}"
+    req = Net::HTTP::Post.new("/#{action}")
+    req.body = "username=#{CGI.escape(username)}&password=#{CGI.escape(password)}&vae_local=1"
     res = fetch_from_vaeplatform(site, req)
     if res.is_a?(Net::HTTPFound)
       raise VaeError, "Invalid username/password or insufficient permissions."
     else
-      puts res.body
+      show_job_status(res, site)
     end
   end
   
