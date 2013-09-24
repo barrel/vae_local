@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'directory_watcher'
   s.add_dependency 'haml', '3.1.2'
   s.add_dependency 'highline'
+  s.add_dependency 'json'
   s.add_dependency 'mongrel', '1.2.0.pre2'
   s.add_dependency 'sass', '3.2.10'
 end
