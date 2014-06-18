@@ -124,6 +124,8 @@ class VaeLocal
     }
     dw.start
 
+    set_mime_types
+
     Dir.chdir File.dirname(__FILE__)
     puts BANNER
     puts "Vae is in action at http://localhost:#{options[:port]}/"  
@@ -168,6 +170,11 @@ class VaeLocal
     end
   rescue JSON::ParserError
     raise VaeError, "An unknown error occurred requesting this operation from Vae Platform.  Please email support for help."
+  end
+
+  def set_mime_types
+    WEBrick::HTTPUtils::DefaultMimeTypes.store 'js', 'application/javascript'
+    WEBrick::HTTPUtils::DefaultMimeTypes.store 'svg', 'image/svg+xml'
   end
   
   def stagerelease(action, site, username, password)
