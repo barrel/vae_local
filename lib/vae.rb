@@ -3,6 +3,7 @@ require 'rubygems'
 require 'cgi'
 require 'digest/md5'
 require 'json'
+require 'mongrel'
 require 'net/http'
 require 'net/https'
 require 'optparse'
@@ -110,7 +111,6 @@ class VaeLocal
     end
 
     # Move mongrel dependency here so not as required on Windows
-    require 'mongrel'
 
     raise VaeError, "You did not specify the path to the root of the local copy of your Vae site.  Please specify it manually by using the --root option or cd to the site root (and make sure it contains a __vae.yml file)." unless options[:site_root]
     raise VaeError, "You specified an invalid path to the local copy of your Vae site." unless File.exists?(options[:site_root])
