@@ -160,7 +160,7 @@ class VaeLocal
       puts "Request started, waiting for completion..."
       loop do
         sleep 5
-        req = Net::HTTP::Get.new("/resque_jobs/show/#{data['job']}")
+        req = Net::HTTP::Get.new("/api/local/v1/job_status/#{data['job']}")
         res = fetch_from_vaeplatform(site, req)
         status = JSON.parse(res.body)
         if status['status'] == "completed"
@@ -181,18 +181,14 @@ class VaeLocal
   end
   
   def stagerelease(action, site, username, password)
-    if action == "deploy" or action == "stage"
-      action = "subversion/stage"
+    if action == "deploy"
+      action = "stage"
     elsif action == "stagerelease"
-      stagerelease("subversion/stage", site, username, password)
-      stagerelease("subversion/release", site, username, password)
+      stagerelease("stage", site, username, password)
+      stagerelease("release", site, username, password)
       return
-    elsif action == "release"
-      action = "releases/release"
-    elsif action == "rollback"
-      action = "releases/rollback"
     end
-    req = Net::HTTP::Post.new("/#{action}")
+    req = Net::HTTP::Post.new("/api/local/v1/#{action}")
     req.body = "username=#{CGI.escape(username)}&password=#{CGI.escape(password)}&vae_local=1"
     res = fetch_from_vaeplatform(site, req)
     if res.is_a?(Net::HTTPFound)
