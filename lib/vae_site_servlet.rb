@@ -139,14 +139,14 @@ class VaeSiteServlet < Servlet
       st = File::stat(local_path)
       mtime = st.mtime
       etag = sprintf("%x-%x-%x", st.ino, st.size, st.mtime.to_i)
-      res.header['etag'] = etag
+      res.header['etag'] = etag if !req_scss?(req)
       if not_modified?(req, res, mtime, etag)
         puts "#{req.params["REQUEST_URI"]} not modified"
         res.status = 304
       else
         mtype = WEBrick::HTTPUtils::mime_type(local_path, WEBrick::HTTPUtils::DefaultMimeTypes)
-        res.header['last-modified'] = mtime.httpdate
-        if req.params["REQUEST_URI"] =~ /\.(sass|scss)$/
+        res.header['last-modified'] = mtime.httpdate if !req_scss?(req)
+        if req_scss?(req)
           res.header['Content-Type'] = "text/css"
           res.body << render_sass(local_path)
         else
@@ -179,6 +179,10 @@ class VaeSiteServlet < Servlet
         res.body << from_vae.body
       end
     end
+  end
+
+  def req_scss?(req)
+    req.params["REQUEST_URI"] =~ /\.(sass|scss)$/
   end
   
   def server_parsed?(path)
