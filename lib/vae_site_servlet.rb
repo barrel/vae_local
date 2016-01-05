@@ -63,17 +63,18 @@ class VaeSiteServlet < Servlet
       req = Net::HTTP::Post.new(uri)
       req.body = wb_req.body.read
     end
-    req['cookie'] = wb_req.params["HTTP_COOKIE"]
+    req_404 = Net::HTTP::Get.new("/error_pages/not_found.html")
+    req['cookie'] = req_404['cookie'] = wb_req.params["HTTP_COOKIE"]
     if wb_req.params['HTTP_X_REQUESTED_WITH']
-      req['X-Requested-With'] = wb_req.params['HTTP_X_REQUESTED_WITH']
+      req['X-Requested-With'] = req_404['X-Requested-With'] = wb_req.params['HTTP_X_REQUESTED_WITH']
     end
     res = $site.fetch_from_server(req)
     if res.body =~ /__vae_local_needs=(.*)/
       begin
         return fetch_from_vae(wb_req, method, [ get_source_file($1) ])
       rescue FileNotFound
-        puts "*\n* Could not find #{$1} -- giving up!\n*"
-        return $site.fetch_from_server(Net::HTTP::Get.new("/error_pages/not_found.html"))
+        puts "* Could not find requested file: #{$1}"
+        return $site.fetch_from_server(req_404)
       end
     end
     res
