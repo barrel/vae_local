@@ -3,6 +3,36 @@
 THIS_FILE = File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__
 $:.unshift File.dirname(THIS_FILE) + '/../lib'
 
-require 'vae'
+require 'rubygems'
 
-VaeLocal.run_trapping_exceptions!
+require 'cgi'
+require 'digest/md5'
+require 'json'
+require 'mongrel'
+require 'net/http'
+require 'net/https'
+require 'optparse'
+require 'thread'
+require 'webrick'
+require 'yaml'
+
+require 'directory_watcher'
+require 'highline/import'
+require 'compass'
+require 'haml'
+
+require 'full_stack'
+require 'logging'
+require 'proxy_server'
+require 'servlet'
+require 'site'
+require 'vae_error'
+require 'vae_site_servlet'
+require 'vae_local'
+require 'version'
+
+SERVER_PARSED = [ ".html", ".haml", ".php", ".xml", ".rss", ".pdf.haml", ".pdf.haml.php", ".haml.php" ]
+SERVER_PARSED_GLOB = [ "**/*.html", "**/*.haml", "**/*.php", "**/*.xml", "**/*.rss", "**/*.pdf.haml", "**/*.pdf.haml.php", "**/*.haml.php" ]
+BANNER = "Vae local preview server, version #{VER}"
+
+VaeLocal.run_trapping_exceptions

@@ -17,11 +17,11 @@ Gem::Specification.new do |s|
   s.summary = "This gem allows for local development for sites on Vae Platform (http://vaeplatform.com/)"
 
   s.add_dependency 'chunky_png'
-  s.add_dependency 'compass', '0.11.5'
+  s.add_dependency 'compass'
   s.add_dependency 'directory_watcher'
-  s.add_dependency 'haml', '3.1.2'
+  s.add_dependency 'haml'
   s.add_dependency 'highline'
   s.add_dependency 'json'
   s.add_dependency 'mongrel', '1.2.0.pre2'
-  s.add_dependency 'sass', '3.2.10'
+  s.add_dependency 'sass'
 end

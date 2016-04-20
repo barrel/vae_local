@@ -6,7 +6,7 @@ class Servlet < Mongrel::HttpHandler
       out << "Servlet"
     end
   end
-  
+
 end
 
 class FileNotFound < ArgumentError
