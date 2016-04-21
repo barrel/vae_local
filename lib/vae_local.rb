@@ -1,4 +1,6 @@
 class VaeLocal
+  BANNER = "Vae local preview server, version #{VER}"
+
   def self.fetch_from_vaeplatform(site, req)
     http = Net::HTTP.new("#{site}.vaeplatform.com", 443)
     http.use_ssl = true

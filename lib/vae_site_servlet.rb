@@ -1,11 +1,13 @@
 class VaeSiteServlet < Servlet
+  SERVER_PARSED = [ ".html", ".haml", ".php", ".xml", ".rss", ".pdf.haml", ".pdf.haml.php", ".haml.php" ]
+
   def initialize(site)
     @cache = {}
     @changed = {}
     @lock = Mutex.new
     @site = site
 
-    dw = DirectoryWatcher.new @site.root, interval: 1.0, glob: SERVER_PARSED_GLOB, pre_load: true, logger: DirectoryWatcher::NullLogger.new
+    dw = DirectoryWatcher.new @site.root, interval: 1.0, glob: SERVER_PARSED.map { |ext| "**/*#{ext}" }, pre_load: true, logger: DirectoryWatcher::NullLogger.new
     dw.add_observer { |*args|
       args.each { |event|
         path = event.path.gsub(@site.root, "")

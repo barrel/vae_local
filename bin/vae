@@ -34,8 +34,4 @@ require 'vae_site_servlet'
 require 'vae_local'
 require 'version'
 
-SERVER_PARSED = [ ".html", ".haml", ".php", ".xml", ".rss", ".pdf.haml", ".pdf.haml.php", ".haml.php" ]
-SERVER_PARSED_GLOB = [ "**/*.html", "**/*.haml", "**/*.php", "**/*.xml", "**/*.rss", "**/*.pdf.haml", "**/*.pdf.haml.php", "**/*.haml.php" ]
-BANNER = "Vae local preview server, version #{VER}"
-
 VaeLocal.run_trapping_exceptions
