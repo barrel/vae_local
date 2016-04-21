@@ -16,16 +16,17 @@ class FullStack
     if data['valid'] == "valid"
       FileUtils.mkdir_p(@site.data_path)
       @site.secret_key = data['secret_key']
-      if data['feed_url']
+      generation = File.exists?("#{@site.data_path}/feed_generation") ? File.open("#{@site.data_path}/feed_generation").read.to_i : 0
+      if data['feed_url'] and data['feed_generation'].to_i > generation
+        puts "Downloading updated Site Data Feed..."
         if curl = File.which("curl")
           `curl -o #{Shellwords.shellescape(@site.data_path)}/feed.xml #{Shellwords.shellescape(data['feed_url'])}`
         else
           download_feed(data['feed_url'])
         end
+        File.open("#{@site.data_path}/feed_generation",'w') { |f| f.write(data['feed_generation']) }
       end
-      if data['settings']
-        File.open("#{@site.data_path}/settings.php",'w') { |f| f.write(data['settings']) }
-      end
+      File.open("#{@site.data_path}/settings.php",'w') { |f| f.write(data['settings']) }
     else
       raise VaeError, "Error Connecting to Vae with the supplied Username and Password.  Please make sure this user has Vae Local permissions assigned."
     end
@@ -78,7 +79,7 @@ class FullStack
       puts "Starting Vaedb on port #{port}..."
       Dir.chdir("#{vae_remote_path}/tests/dependencies/vae_thrift/cpp/")
       ENV['VAE_LOCAL_VAEDB_PORT'] = port.to_s
-      exec "./vaedb --port #{port} --test"
+      exec "./vaedb --port #{port} --test --log_level warning"
     }
     @pids << fork {
       Dir.chdir(@site.root)
