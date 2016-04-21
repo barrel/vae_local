@@ -60,7 +60,7 @@ class FullStack
   def launch_daemons
     if VaeLocal.port_open?(9090)
       @pids << fork {
-        Dir.chdir("#{vae_remote_path}/tests/dependencies/vae_thrift/rb/")
+        Dir.chdir("#{vae_thrift_path}/rb/")
         STDOUT.reopen("/dev/null", "w")
         STDERR.reopen("/dev/null", "w")
         exec "bundle exec ./vaerubyd.rb"
@@ -72,7 +72,7 @@ class FullStack
       port = port + 1
     }
     @pids << fork {
-      Dir.chdir("#{vae_remote_path}/tests/dependencies/vae_thrift/cpp/")
+      Dir.chdir("#{vae_thrift_path}/cpp/")
       ENV['VAE_LOCAL_VAEDB_PORT'] = port.to_s
       exec "./vaedb --port #{port} --busaddress 'tcp://*:#{port-4000}' --test --log_level warning"
     }
@@ -86,9 +86,23 @@ class FullStack
   end
 
   def vae_remote_path
+    return @vae_remote_path if @vae_remote_path
     thisdir = File.dirname(__FILE__)
     [ "#{thisdir}/../../vae_remote", "#{thisdir}/../../../vae_remote", "/usr/local/vae_remote", "~/vae_remote" ].each { |path|
-      return path if File.exists?(path)
+      if File.exists?(path)
+        return @vae_remote_path = path
+      end
+    }
+    raise VaeError, "Could not find Vae Remote on your system.  Please symlink it to /usr/local/vae_remote or ~/vae_remote"
+  end
+
+  def vae_thrift_path
+    return @vae_thrift_path if @vae_thrift_path
+    thisdir = File.dirname(__FILE__)
+    [ "#{thisdir}/../../vae_thrift", "#{thisdir}/../../../vae_thrift", "/usr/local/vae_thrift", "~/vae_thrift", "#{vae_remote_path}/tests/dependencies/vae_thrift" ].each { |path|
+      if File.exists?(path)
+        return @vae_remote_path = path
+      end
     }
     raise VaeError, "Could not find Vae Remote on your system.  Please symlink it to /usr/local/vae_remote or ~/vae_remote"
   end
