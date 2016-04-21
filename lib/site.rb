@@ -8,7 +8,7 @@ class Site
     @username = options[:username] if options[:username]
     @password = options[:password] if options[:password]
     @session_id = Digest::MD5.hexdigest(rand.to_s)
-    @data_path = options[:data_path] || "#{@root}/.vae/data"
+    @data_path = options[:data_path] || "#{@root}/.vae/data/"
     login_to_server
   end
 
