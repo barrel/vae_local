@@ -15,6 +15,9 @@ class FullStack
     data = JSON.parse(res.body)
     if data['valid'] == "valid"
       FileUtils.mkdir_p(@site.data_path)
+      if !File.exists?(@site.data_path + "/assets/")
+        FileUtils.ln_s("#{vae_remote_path}/public", @site.data_path + "/assets")
+      end
       @site.secret_key = data['secret_key']
       generation = File.exists?("#{@site.data_path}feed_generation") ? File.open("#{@site.data_path}feed_generation").read.to_i : 0
       if data['feed_url'] and data['feed_generation'].to_i > generation
