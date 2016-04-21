@@ -54,15 +54,8 @@ class FullStack
     puts "Quit signal received, cleaning up ..."
     @pids.map { |pid| Process.kill("TERM", pid) }
   end
-
-  def port_open?(port)
-    system("lsof -i:#{port}", out: '/dev/null')
-  end
-
   def launch_daemons
-    puts "Launching Daemons"
-    if !port_open?(9090)
-      puts "Starting Vaerubyd..."
+    if VaeLocal.port_open?(9090)
       @pids << fork {
         Dir.chdir("#{vae_remote_path}/tests/dependencies/vae_thrift/rb/")
         STDOUT.reopen("/dev/null", "w")
@@ -72,14 +65,13 @@ class FullStack
     end
     port = 9091
     loop {
-      break if !port_open?(port)
+      break if VaeLocal.port_open?(port)
       port = port + 1
     }
     @pids << fork {
-      puts "Starting Vaedb on port #{port}..."
       Dir.chdir("#{vae_remote_path}/tests/dependencies/vae_thrift/cpp/")
       ENV['VAE_LOCAL_VAEDB_PORT'] = port.to_s
-      exec "./vaedb --port #{port} --test --log_level warning"
+      exec "./vaedb --port #{port} --busaddress 'tcp://*:#{port-4000}' --test --log_level warning"
     }
     @pids << fork {
       Dir.chdir(@site.root)

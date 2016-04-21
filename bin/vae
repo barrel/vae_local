@@ -3,6 +3,8 @@
 THIS_FILE = File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__
 $:.unshift File.dirname(THIS_FILE) + '/../lib'
 
+require 'version'
+
 require 'rubygems'
 
 require 'cgi'
@@ -32,6 +34,5 @@ require 'site'
 require 'vae_error'
 require 'vae_site_servlet'
 require 'vae_local'
-require 'version'
 
 VaeLocal.run_trapping_exceptions

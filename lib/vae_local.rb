@@ -11,6 +11,10 @@ class VaeLocal
     }
   end
 
+  def self.port_open?(port)
+    !system("lsof -i:#{port}", out: '/dev/null')
+  end
+
   def get_svn_credentials(site)
     home = Dir.chdir { Dir.pwd }
     Dir.glob("#{home}/.subversion/auth/svn.simple/*").each do |file|
@@ -47,11 +51,15 @@ class VaeLocal
 
   def run
     options = { port: 9999, server: ProxyServer }
+    loop {
+      break if VaeLocal.port_open?(options[:port])
+      options[:port] = options[:port] - 1
+    }
 
     ARGV.options  do |opts|
       opts.banner = BANNER + "\n\nUsage: vae [options]\n         starts a local development server\n       vae [options] deploy\n         promotes the source in Subversion repository to the FTP\n\n  If you are using the Vae Production environment features:\n       vae [options] stage\n         promotes the source in Subversion repository to the staging environment\n       vae [options] stagerelease\n         promotes the source in Subversion repository to the staging environment\n         and releases it to the production environment\n       vae [options] release\n         releases the current staging environment to the production environment\n       vae [options] rollback\n         rolls back the production environment to a previous release\n\nAvailable Options:"
       opts.on("-u","--username <username>","Your Vae username") { |o| options[:username] = o }
-      opts.on("-p","--port <port number>","Start server on this port") { |o| options[:port] = o }
+      opts.on("-p","--port <port number>","Start server on this port") { |o| options[:port] = o.to_i; raise VaeError "Port #{o.to_i} is already in use." unless VaeLocal.port_open?(o.to_i) }
       opts.on("-r","--root <path to site root>","Path to the root of the local copy of your Vae site.") { |o| options[:site_root] = o }
       opts.on("-s","--site <subdomain>","Vae subdomain for this site") { |o| options[:site] = o }
       opts.on("-f","--full-stack","Run in Full Stack Mode (experimental)") { options[:server] = FullStack }
