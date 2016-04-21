@@ -1,5 +1,6 @@
 class Site
-  attr_accessor :password, :root, :session_id, :subdomain, :username
+  attr_reader :password, :root, :session_id, :subdomain, :username, :data_path
+  attr_accessor :secret_key
 
   def initialize(options)
     @root = options[:root] if options[:root]
@@ -7,6 +8,7 @@ class Site
     @username = options[:username] if options[:username]
     @password = options[:password] if options[:password]
     @session_id = Digest::MD5.hexdigest(rand.to_s)
+    @data_path = options[:data_path] || "#{@root}/.vae/data"
     login_to_server
   end
 

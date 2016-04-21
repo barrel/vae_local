@@ -1,5 +1,5 @@
 class VaeLocal
-  def fetch_from_vaeplatform(site, req)
+  def self.fetch_from_vaeplatform(site, req)
     http = Net::HTTP.new("#{site}.vaeplatform.com", 443)
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -53,6 +53,7 @@ class VaeLocal
       opts.on("-r","--root <path to site root>","Path to the root of the local copy of your Vae site.") { |o| options[:site_root] = o }
       opts.on("-s","--site <subdomain>","Vae subdomain for this site") { |o| options[:site] = o }
       opts.on("-f","--full-stack","Run in Full Stack Mode (experimental)") { options[:server] = FullStack }
+      opts.on("-d","--data-path <path>","Where to Store Content and Image Data When In Full Stack Mode") { |o| options[:data_path] = o }
       opts.on_tail("-h","--help", "Show this help message") { puts opts; exit }
       opts.parse!
     end
@@ -105,7 +106,7 @@ class VaeLocal
       loop do
         sleep 5
         req = Net::HTTP::Get.new("/api/local/v1/job_status/#{data['job']}")
-        res = fetch_from_vaeplatform(site, req)
+        res = VaeLocal.fetch_from_vaeplatform(site, req)
         status = JSON.parse(res.body)
         if status['status'] == "completed"
           puts data['success']
@@ -129,7 +130,7 @@ class VaeLocal
     end
     req = Net::HTTP::Post.new("/api/local/v1/#{action}")
     req.body = "username=#{CGI.escape(username)}&password=#{CGI.escape(password)}&vae_local=1"
-    res = fetch_from_vaeplatform(site, req)
+    res = VaeLocal.fetch_from_vaeplatform(site, req)
     if res.is_a?(Net::HTTPFound)
       raise VaeError, "Invalid username/password or insufficient permissions."
     else

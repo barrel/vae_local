@@ -23,5 +23,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'highline'
   s.add_dependency 'json'
   s.add_dependency 'mongrel', '1.2.0.pre2'
+  s.add_dependency 'ptools'
   s.add_dependency 'sass'
 end
