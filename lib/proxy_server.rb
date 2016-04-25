@@ -15,7 +15,7 @@ class ProxyServer
       run
     end
 
-    puts "Vae is in action at http://localhost:#{options[:port]}/"
+    puts "Vae is in action at http://localhost:#{@options[:port]}/"
     puts "  (hit Control+C to exit)"
 
     begin
