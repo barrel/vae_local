@@ -2,8 +2,9 @@ class VaeLocal
   BANNER = "Vae local preview server, version #{VER}"
 
   def self.fetch_from_vaeplatform(site, req)
-    http = Net::HTTP.new("#{site}.vaeplatform.com", 443)
-    http.use_ssl = true
+    local = ENV['VAEPLATFORM_LOCAL']
+    http = Net::HTTP.new("#{site}." + (local ? "vaeplatform.dev" : "vaeplatform.com"), (local ? 80 : 443))
+    http.use_ssl = true unless local
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
     http.start { |http|
       http.read_timeout = 120

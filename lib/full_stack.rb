@@ -57,6 +57,7 @@ class FullStack
     puts "Quit signal received, cleaning up ..."
     @pids.map { |pid| Process.kill("TERM", pid) }
   end
+
   def launch_daemons
     if VaeLocal.port_open?(9090)
       @pids << fork {
@@ -78,7 +79,7 @@ class FullStack
     }
     @pids << fork {
       Dir.chdir(@site.root)
-      ENV['VAE_LOCAL_SUBDOMAIN'] = @site.subdomain
+      ENV['VAE_LOCAL_BACKSTAGE'] = @site.subdomain + ".vaeplatform." + (ENV['VAEPLATFORM_LOCAL'] ? "dev" : "com")
       ENV['VAE_LOCAL_SECRET_KEY'] = @site.secret_key
       ENV['VAE_LOCAL_DATA_PATH'] = @site.data_path
       exec "php -c #{vae_remote_path}/tests/dependencies/php.ini -S 0.0.0.0:#{options[:port]} #{vae_remote_path}/lib/index.php"
