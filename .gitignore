@@ -1,4 +1,5 @@
 .svn
+.bundle
 *.gem
 */.svn
 lib/.DS_Store
