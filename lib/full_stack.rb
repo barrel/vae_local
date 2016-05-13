@@ -75,7 +75,7 @@ class FullStack
     @pids << fork {
       Dir.chdir("#{vae_thrift_path}/cpp/")
       ENV['VAE_LOCAL_VAEDB_PORT'] = port.to_s
-      exec "./vaedb --port #{port} --busaddress 'tcp://*:#{port-4000}' --test --log_level warning"
+      exec "./vaedb --port #{port} --busaddress 'tcp://*:#{port-4000}' --test --log_level #{options[:log_level]}"
     }
     @pids << fork {
       Dir.chdir(@site.root)

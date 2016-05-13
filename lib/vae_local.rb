@@ -51,7 +51,7 @@ class VaeLocal
   end
 
   def run
-    options = { port: 9999, server: ProxyServer }
+    options = { port: 9999, server: ProxyServer, log_level: "warning" }
     loop {
       break if VaeLocal.port_open?(options[:port])
       options[:port] = options[:port] - 1
@@ -65,6 +65,7 @@ class VaeLocal
       opts.on("-s","--site <subdomain>","Vae subdomain for this site") { |o| options[:site] = o }
       opts.on("-f","--full-stack","Run in Full Stack Mode (experimental)") { options[:server] = FullStack }
       opts.on("-d","--data-path <path>","Where to Store Content and Image Data When In Full Stack Mode") { |o| options[:data_path] = o }
+      opts.on("-l","--log-level <level>","Vaedb Log Level (for Full Stack Mode)") { |o| options[:log_level] = o }
       opts.on_tail("-h","--help", "Show this help message") { puts opts; exit }
       opts.parse!
     end
