@@ -68,17 +68,24 @@ class FullStack
       }
     end
     port = 9091
+    serve_root = @site.root
     loop {
       break if VaeLocal.port_open?(port)
       port = port + 1
     }
+    if File.exists?(@site.root + "/.jekyll")
+      @pids << fork {
+        exec "bundle exec jekyll build --watch --source #{Shellwords.shellescape(@site.root)}"
+      }
+      serve_root = @site.root + "/_site/"
+    end
     @pids << fork {
       Dir.chdir("#{vae_thrift_path}/cpp/")
       ENV['VAE_LOCAL_VAEDB_PORT'] = port.to_s
       exec "./vaedb --port #{port} --busaddress 'tcp://*:#{port-4000}' --test --log_level #{options[:log_level]}"
     }
     @pids << fork {
-      Dir.chdir(@site.root)
+      Dir.chdir(serve_root)
       ENV['VAE_LOCAL_BACKSTAGE'] = @site.subdomain + ".vaeplatform." + (ENV['VAEPLATFORM_LOCAL'] ? "dev" : "com")
       ENV['VAE_LOCAL_SECRET_KEY'] = @site.secret_key
       ENV['VAE_LOCAL_DATA_PATH'] = @site.data_path
