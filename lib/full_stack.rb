@@ -75,7 +75,7 @@ class FullStack
     }
     if File.exists?(@site.root + "/.jekyll")
       @pids << fork {
-        exec "bundle exec jekyll build --watch --source #{Shellwords.shellescape(@site.root)}"
+        exec "bundle exec jekyll build --watch --source #{Shellwords.shellescape(@site.root)} --destination #{Shellwords.shellescape(@site.root)}/_site/"
       }
       serve_root = @site.root + "/_site/"
     end
