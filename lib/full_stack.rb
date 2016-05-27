@@ -74,10 +74,11 @@ class FullStack
       port = port + 1
     }
     if File.exists?(@site.root + "/.jekyll")
-      @pids << fork {
-        exec "bundle exec jekyll build --watch --source #{Shellwords.shellescape(@site.root)} --destination #{Shellwords.shellescape(@site.root)}/_site/"
-      }
       serve_root = @site.root + "/_site/"
+      FileUtils.mkdir_p(serve_root)
+      @pids << fork {
+        exec "bundle exec jekyll build --watch --source #{Shellwords.shellescape(@site.root)} --destination #{Shellwords.shellescape(serve_root)}"
+      }
     end
     @pids << fork {
       Dir.chdir("#{vae_thrift_path}/cpp/")
