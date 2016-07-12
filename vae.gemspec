@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'chunky_png'
   s.add_dependency 'compass'
   s.add_dependency 'directory_watcher'
-  s.add_dependency 'github-pages', '= 43'
+  s.add_dependency 'github-pages'
   s.add_dependency 'haml'
   s.add_dependency 'highline'
   s.add_dependency 'jekyll-multiple-languages-plugin'
