@@ -3,6 +3,17 @@
 Local full stack or proxy server for developing Vae Platform sites on
 your local machine.
 
+
+## Installing Prerequisites for Full Stack Development on macOS via Homebrew:
+
+To run the Vae full stack on your Mac, please first install the
+prerequisites via Homebrew:
+
+```
+brew tap actionverb/tap
+brew install vaeql vae-thrift vae-remote
+```
+
 ## License
 
 Copyright (c) 2016 Action Verb, LLC.

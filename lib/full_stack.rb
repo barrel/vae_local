@@ -97,22 +97,26 @@ class FullStack
   def vae_remote_path
     return @vae_remote_path if @vae_remote_path
     thisdir = File.dirname(__FILE__)
-    [ "#{thisdir}/../../vae_remote", "#{thisdir}/../../../vae_remote", "/usr/local/vae_remote", "~/vae_remote" ].each { |path|
+    [ "#{thisdir}/../../vae_remote", "#{thisdir}/../../../vae_remote", "/usr/local/vae_remote", "/usr/local/opt/vae-thrift", "/usr/local/Cellar/vae_thrift/1.0.0", "~/vae_remote" ].each { |path|
       if File.exists?(path)
         return @vae_remote_path = path
       end
     }
-    raise VaeError, "Could not find Vae Remote on your system.  Please symlink it to /usr/local/vae_remote or ~/vae_remote"
+    raise VaeError, "Could not find Vae Remote on your system.#{brew_message}"
   end
 
   def vae_thrift_path
     return @vae_thrift_path if @vae_thrift_path
     thisdir = File.dirname(__FILE__)
-    [ "#{thisdir}/../../vae_thrift", "#{thisdir}/../../../vae_thrift", "/usr/local/vae_thrift", "~/vae_thrift", "#{vae_remote_path}/tests/dependencies/vae_thrift" ].each { |path|
+    [ "#{thisdir}/../../vae_thrift", "#{thisdir}/../../../vae_thrift", "/usr/local/vae_thrift", "/usr/local/opt/vae-thrift", "/usr/local/Cellar/vae_thrift/1.0.0", "~/vae_thrift", "#{vae_remote_path}/tests/dependencies/vae_thrift" ].each { |path|
       if File.exists?(path)
         return @vae_remote_path = path
       end
     }
-    raise VaeError, "Could not find Vae Remote on your system.  Please symlink it to /usr/local/vae_remote or ~/vae_remote"
+    raise VaeError, "Could not find Vae Thrift on your system.#{brew_message}"
+  end
+
+  def brew_message
+    "\n\nTo install Vae Local Full Stack dependencies on macOS via Homebrew, run the following commands:\n  brew tap actionverb/tap\n  brew install vae-remote vae-thrift vaeql\n\nMake sure you resolve any errors from Homebrew before proceeding."
   end
 end

@@ -12,19 +12,19 @@ Gem::Specification.new do |s|
   s.executables << "vae"
   s.files = Dir.glob("{bin,lib,test}/**/*")
   s.homepage = "http://docs.vaeplatform.com/vae_local"
-  s.license = "GPL"
+  s.license = "GPL-3.0"
   s.rubygems_version = '1.8.10'
   s.summary = "This gem allows for local development for sites on Vae Platform (http://vaeplatform.com/)"
 
-  s.add_dependency 'chunky_png'
-  s.add_dependency 'compass'
-  s.add_dependency 'directory_watcher'
-  s.add_dependency 'github-pages'
-  s.add_dependency 'haml'
-  s.add_dependency 'highline'
-  s.add_dependency 'jekyll-multiple-languages-plugin'
-  s.add_dependency 'json'
+  s.add_dependency 'chunky_png', '~> 1'
+  s.add_dependency 'compass', '~> 1'
+  s.add_dependency 'directory_watcher', '~> 1'
+  s.add_dependency 'github-pages', '87'
+  s.add_dependency 'haml', '~> 4'
+  s.add_dependency 'highline', '~> 1'
+  s.add_dependency 'jekyll-multiple-languages-plugin', '~> 1.4'
+  s.add_dependency 'json', '~> 1'
   s.add_dependency 'mongrel', '1.2.0.pre2'
-  s.add_dependency 'ptools'
-  s.add_dependency 'sass'
+  s.add_dependency 'ptools', '~> 1'
+  s.add_dependency 'sass', '~> 3.4'
 end

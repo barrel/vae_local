@@ -2,17 +2,17 @@ PATH
   remote: .
   specs:
     vae (0.7.0)
-      chunky_png
-      compass
-      directory_watcher
-      github-pages
-      haml
-      highline
-      jekyll-multiple-languages-plugin
-      json
+      chunky_png (~> 1)
+      compass (~> 1)
+      directory_watcher (~> 1)
+      github-pages (= 87)
+      haml (~> 4)
+      highline (~> 1)
+      jekyll-multiple-languages-plugin (~> 1.4)
+      json (~> 1)
       mongrel (= 1.2.0.pre2)
-      ptools
-      sass
+      ptools (~> 1)
+      sass (~> 3.4)
 
 GEM
   remote: https://rubygems.org/
