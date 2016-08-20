@@ -97,7 +97,7 @@ class FullStack
   def vae_remote_path
     return @vae_remote_path if @vae_remote_path
     thisdir = File.dirname(__FILE__)
-    [ "#{thisdir}/../../vae_remote", "#{thisdir}/../../../vae_remote", "/usr/local/vae_remote", "/usr/local/opt/vae-thrift", "/usr/local/Cellar/vae_thrift/1.0.0", "~/vae_remote" ].each { |path|
+    [ "#{thisdir}/../../vae_remote", "#{thisdir}/../../../vae_remote", "/usr/local/vae_remote", "/usr/local/opt/vae-remote", "/usr/local/Cellar/vae_remote/1.0.0", "~/vae_remote" ].each { |path|
       if File.exists?(path)
         return @vae_remote_path = path
       end
