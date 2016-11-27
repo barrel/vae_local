@@ -59,6 +59,7 @@ class FullStack
   end
 
   def launch_daemons
+    puts "Using Vae daemons at #{vae_thrift_path}"
     if VaeLocal.port_open?(9090)
       @pids << fork {
         Dir.chdir("#{vae_thrift_path}/rb/")
@@ -98,7 +99,7 @@ class FullStack
     return @vae_remote_path if @vae_remote_path
     thisdir = File.dirname(__FILE__)
     [ "#{thisdir}/../../vae_remote", "#{thisdir}/../../../vae_remote", "/usr/local/vae_remote", "/usr/local/opt/vae-remote", "/usr/local/Cellar/vae_remote/1.0.0", "~/vae_remote" ].each { |path|
-      if File.exists?(path)
+      if File.exists?(path) and File.exists?(path + "/lib/general.php")
         return @vae_remote_path = path
       end
     }
@@ -109,8 +110,8 @@ class FullStack
     return @vae_thrift_path if @vae_thrift_path
     thisdir = File.dirname(__FILE__)
     [ "#{thisdir}/../../vae_thrift", "#{thisdir}/../../../vae_thrift", "/usr/local/vae_thrift", "/usr/local/opt/vae-thrift", "/usr/local/Cellar/vae_thrift/1.0.0", "~/vae_thrift", "#{vae_remote_path}/tests/dependencies/vae_thrift" ].each { |path|
-      if File.exists?(path)
-        return @vae_remote_path = path
+      if File.exists?(path) and File.exists?(path + "/cpp/vaedb")
+        return @vae_thrift_path = path
       end
     }
     raise VaeError, "Could not find Vae Thrift on your system.#{brew_message}"
