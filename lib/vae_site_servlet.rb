@@ -27,7 +27,11 @@ class VaeSiteServlet < Servlet
       @changed = {}
     }
     source_files.concat(changed.map { |filename,action|
-      get_source_file(filename, (action == :deleted))
+      begin
+        get_source_file(filename, (action == :deleted))
+      rescue FileNotFound
+        nil
+      end
     }).reject { |src| src.nil? }
   end
 
