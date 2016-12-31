@@ -91,6 +91,7 @@ class VaeSiteServlet < Servlet
     if wb_req.params['HTTP_X_REQUESTED_WITH']
       req['X-Requested-With'] = req_404['X-Requested-With'] = wb_req.params['HTTP_X_REQUESTED_WITH']
     end
+    req['X-Vae-Local-Host'] = wb_req.params['HTTP_HOST']
     res = @site.fetch_from_server(req)
     if res.body =~ /__vae_local_needs=(.*)/
       begin
