@@ -64,6 +64,7 @@ class VaeLocal
       opts.on("-r","--root <path to site root>","Path to the root of the local copy of your Vae site.") { |o| options[:site_root] = o }
       opts.on("-s","--site <subdomain>","Vae subdomain for this site") { |o| options[:site] = o }
       opts.on("-f","--full-stack","Run in Full Stack Mode (experimental)") { options[:server] = FullStack }
+      opts.on("-b","--branch","If running stage or stagerelease, override the branch to deploy here") { |o| options[:branch] = o }
       opts.on("-d","--data-path <path>","Where to Store Content and Image Data When In Full Stack Mode") { |o| options[:data_path] = o }
       opts.on("-l","--log-level <level>","Vaedb Log Level (for Full Stack Mode)") { |o| options[:log_level] = o }
       opts.on_tail("-h","--help", "Show this help message") { puts opts; exit }
@@ -94,7 +95,7 @@ class VaeLocal
     end
 
     if [ "deploy", "release", "rollback", "stage", "stagerelease" ].include?(ARGV.last)
-      stagerelease(ARGV.last, options[:site], options[:username], options[:password])
+      stagerelease(ARGV.last, options[:site], options[:username], options[:password], options[:branch])
       exit
     end
 
@@ -132,16 +133,16 @@ class VaeLocal
     raise VaeError, "An unknown error occurred requesting this operation from Vae Platform.  Please email support for help."
   end
 
-  def stagerelease(action, site, username, password)
+  def stagerelease(action, site, username, password, branch)
     if action == "deploy"
       action = "stage"
     elsif action == "stagerelease"
-      stagerelease("stage", site, username, password)
-      stagerelease("release", site, username, password)
+      stagerelease("stage", site, username, password, branch)
+      stagerelease("release", site, username, password, branch)
       return
     end
     req = Net::HTTP::Post.new("/api/local/v1/#{action}")
-    req.body = "username=#{CGI.escape(username)}&password=#{CGI.escape(password)}&vae_local=1"
+    req.body = "username=#{CGI.escape(username)}&password=#{CGI.escape(password)}&branch=#{CGI.escape(branch)}&vae_local=1"
     res = VaeLocal.fetch_from_vaeplatform(site, req)
     if res.is_a?(Net::HTTPFound)
       raise VaeError, "Invalid username/password or insufficient permissions."
