@@ -91,7 +91,12 @@ class FullStack
       ENV['VAE_LOCAL_BACKSTAGE'] = @site.subdomain + ".vaeplatform." + (ENV['VAEPLATFORM_LOCAL'] ? "dev" : "com")
       ENV['VAE_LOCAL_SECRET_KEY'] = @site.secret_key
       ENV['VAE_LOCAL_DATA_PATH'] = @site.data_path
-      exec "php -c #{vae_remote_path}/tests/dependencies/php.ini -S 0.0.0.0:#{options[:port]} #{vae_remote_path}/lib/index.php"
+      if options[:php_runtime] == "hhvm"
+        ENV['VAE_LOCAL_HHVM'] = "1"
+        exec "hhvm -c #{vae_remote_path}/tests/dependencies/php.ini -m server -d auto_prepend_file=#{vae_remote_path}/lib/index.php -d hhvm.server.error_document404=#{vae_remote_path}/lib/index.php -d hhvm.server.port=#{options[:port]} -d hhvm.server.source_root=#{Shellwords.shellescape(@site.root)}"
+      else
+        exec "php -c #{vae_remote_path}/tests/dependencies/php.ini -S 0.0.0.0:#{options[:port]} #{vae_remote_path}/lib/index.php"
+      end
     }
   end
 

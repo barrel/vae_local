@@ -63,7 +63,7 @@ class VaeLocal
       opts.on("-p","--port <port number>","Start server on this port") { |o| options[:port] = o.to_i; raise VaeError "Port #{o.to_i} is already in use." unless VaeLocal.port_open?(o.to_i) }
       opts.on("-r","--root <path to site root>","Path to the root of the local copy of your Vae site.") { |o| options[:site_root] = o }
       opts.on("-s","--site <subdomain>","Vae subdomain for this site") { |o| options[:site] = o }
-      opts.on("-f","--full-stack","Run in Full Stack Mode (experimental)") { options[:server] = FullStack }
+      opts.on("-f","--full-stack [php|hhvm]","Run in Full Stack Mode.  Optionally provide 'php' or 'hhvm' to specify your preferred PHP runtime") { |o| options[:server] = FullStack; options[:php_runtime] = o }
       opts.on("-b","--branch","If running stage or stagerelease, override the branch to deploy here") { |o| options[:branch] = o }
       opts.on("-d","--data-path <path>","Where to Store Content and Image Data When In Full Stack Mode") { |o| options[:data_path] = o }
       opts.on("-l","--log-level <level>","Vaedb Log Level (for Full Stack Mode)") { |o| options[:log_level] = o }
