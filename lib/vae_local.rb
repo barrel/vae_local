@@ -142,7 +142,7 @@ class VaeLocal
       return
     end
     req = Net::HTTP::Post.new("/api/local/v1/#{action}")
-    req.body = "username=#{CGI.escape(username)}&password=#{CGI.escape(password)}&branch=#{CGI.escape(branch)}&vae_local=1"
+    req.body = "username=#{CGI::escape(username)}&password=#{CGI::escape(password)}&branch=#{CGI::escape(branch)}&vae_local=1"
     res = VaeLocal.fetch_from_vaeplatform(site, req)
     if res.is_a?(Net::HTTPFound)
       raise VaeError, "Invalid username/password or insufficient permissions."
